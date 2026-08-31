@@ -9,10 +9,15 @@ app.get('/health', (_req, res) => {
   res.status(200).send('ok')
 })
 
-app.use(Express.static('public'))
+// Send the index.html file for the preview route
+app.get('/preview', (_req, res) => {
+  res.sendFile('public/index.html', { root: process.cwd() })
+})
+
+app.use('/assets', Express.static('public/assets'))
 
 app.use((_req, res) => {
-  res.status(404).send('Not Found')
+  res.status(404).send('Not Found. If you are trying to access the preview, please use the /preview route.')
 })
 
 app.listen(PORT, HOST, () => {
