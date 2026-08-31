@@ -1,0 +1,29 @@
+{
+  "name": "crystal-display",
+  "version": "0.1.0",
+  "description": "e-Ink dashboard display",
+  "homepage": "https://github.com/majestic-turkey/crystal-display#readme",
+  "bugs": {
+    "url": "https://github.com/majestic-turkey/crystal-display/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/majestic-turkey/crystal-display.git"
+  },
+  "license": "ISC",
+  "author": "Saltworks",
+  "type": "module",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node index.ts --watch",
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "typescript": "^7.0.2"
+  }
+}
