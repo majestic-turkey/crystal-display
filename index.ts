@@ -5,12 +5,14 @@ const HOST = '0.0.0.0'
 
 const app = Express()
 
-app.get('/', (req, res) => {
-  res.send('Hello World! This is a test server for Crystal Display.')
-})
-
 app.get('/health', (_req, res) => {
   res.status(200).send('ok')
+})
+
+app.use(Express.static('public'))
+
+app.use((_req, res) => {
+  res.status(404).send('Not Found')
 })
 
 app.listen(PORT, HOST, () => {
