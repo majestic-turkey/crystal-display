@@ -1,7 +1,7 @@
 import Express from 'express'
-
-const PORT = Number(process.env.PORT || 7000)
-const HOST = '0.0.0.0'
+import { capture } from './capture.ts'
+import { reencodePng } from './converter.ts'
+import { PORT, HOST } from './config.ts'
 
 const app = Express()
 
@@ -10,10 +10,10 @@ app.get('/health', (_req, res) => {
 })
 
 // Send the index.html file for the preview route
-app.get('/preview', (req, res) => {
+app.get('/preview', async (req, res) => {
   if (req.query.mode === '1bit') {
-    res.sendFile('public/preview-1bit.html', { root: process.cwd() })
-    return
+    const pngBuffer = await capture(req.path)
+    return res.type('image/png').send(reencodePng(pngBuffer))
   }
   res.sendFile('public/index.html', { root: process.cwd() })
 })
