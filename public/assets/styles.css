@@ -2,7 +2,7 @@
   font-family: 'Atkinson Hyperlegible';
   font-style: normal;
   font-weight: 400;
-  font-display: swap;
+  font-display: block;
   src: url('./fonts/AtkinsonHyperlegible-Regular.woff2') format('woff2');
 }
 
@@ -10,7 +10,7 @@
   font-family: 'Atkinson Hyperlegible';
   font-style: normal;
   font-weight: 700;
-  font-display: swap;
+  font-display: block;
   src: url('./fonts/AtkinsonHyperlegible-Bold.woff2') format('woff2');
 }
 
@@ -73,7 +73,7 @@ table {
     border: 1px solid #000;
     padding: 8px;
     overflow: hidden;
-    text-overflow: ellipsis;
+    text-overflow: '•••';
     white-space: nowrap;
     vertical-align: top;
 }

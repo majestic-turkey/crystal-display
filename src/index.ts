@@ -10,7 +10,11 @@ app.get('/health', (_req, res) => {
 })
 
 // Send the index.html file for the preview route
-app.get('/preview', (_req, res) => {
+app.get('/preview', (req, res) => {
+  if (req.query.mode === '1bit') {
+    res.sendFile('public/preview-1bit.html', { root: process.cwd() })
+    return
+  }
   res.sendFile('public/index.html', { root: process.cwd() })
 })
 
