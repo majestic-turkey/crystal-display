@@ -1,4 +1,3 @@
-import playwright from 'playwright'
 import pngjs from 'pngjs'
 import { getBrowser, closeBrowser } from './browser.js'
 import { BASE_URL } from './config.js'

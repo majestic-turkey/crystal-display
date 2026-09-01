@@ -7,9 +7,8 @@ RUN npm ci
 
 FROM deps AS build
 COPY tsconfig.json ./
-COPY tsconfig.build.json ./
 COPY src ./src
-RUN npx tsc -p tsconfig.build.json
+RUN npm run build
 
 FROM node:22-bookworm-slim AS runtime
 WORKDIR /app
