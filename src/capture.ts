@@ -1,7 +1,7 @@
 import playwright from 'playwright'
 import pngjs from 'pngjs'
-import { getBrowser, closeBrowser } from './browser.ts'
-import { BASE_URL } from './config.ts'
+import { getBrowser, closeBrowser } from './browser.js'
+import { BASE_URL } from './config.js'
 
 // Capture a screenshot of the given URL and return the path to the saved PNG file
 export async function capture(url: string): Promise<{ data: Buffer, width: number, height: number }> {
