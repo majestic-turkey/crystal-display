@@ -1,6 +1,6 @@
 import Express from 'express'
-import { capture } from './capture.js'
-import { reencodePng } from './converter.js'
+import { capture } from './render/capture.js'
+import { reencodePng } from './render/converter.js'
 import { PORT, HOST } from './config.js'
 
 const app = Express()
