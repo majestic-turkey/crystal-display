@@ -12,6 +12,7 @@ services:
       NODE_ENV: production
       PORT: 7000
       TZ: UTC
+      MODE: production
 
     # Bind only to localhost; nginx on VPS forwards to this.
     ports:
