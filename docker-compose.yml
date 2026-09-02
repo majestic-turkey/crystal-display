@@ -13,6 +13,8 @@ services:
       PORT: 7000
       TZ: UTC
       MODE: production
+      DATA_DIR: /app/data
+      CHECKIDAY_API_KEY: ${CHECKIDAY_API_KEY:?Set CHECKIDAY_API_KEY in .env}
 
     # Bind only to localhost; nginx on VPS forwards to this.
     ports:

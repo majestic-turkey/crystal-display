@@ -1,4 +1,4 @@
-import type { DataAdapter, WeatherData } from "../types.js";
+import type { CalendarData, DataAdapter, WeatherData } from "../types.js";
 import { escapeHtml } from "../helpers.js"
 import { BASE_URL } from "../config.js"
 
@@ -17,7 +17,7 @@ function windDirectionToArrow(direction: string): string {
     return "?";
 }
 
-export function renderTemplate(weatherData: DataAdapter<WeatherData>): string {
+export function renderWeatherTemplate(weatherData: DataAdapter<WeatherData>): string {
     const weather = weatherData.data;
     const temperature = weather ? `${Math.round(weather.temperature)}F` : "--F";
     const windSpeed = weather?.windSpeed ? escapeHtml(`${weather.windSpeed}`) : "-- mph";
@@ -92,4 +92,55 @@ export function renderTemplate(weatherData: DataAdapter<WeatherData>): string {
     </body>
 </html>`
     return weatherTemplate
+}
+
+export function renderCalendarTemplate(calendarData: DataAdapter<CalendarData>): string {
+    const calendar = calendarData.data
+    const date = calendar ? escapeHtml(calendar.date) : "Date unavailable"
+
+    const dayOfWeek = calendar ? escapeHtml(calendar.dayOfWeek) : "Day unavailable"
+    const holidays = calendar && calendar.holidays.length > 0
+        ? calendar.holidays.map(holiday => `<li>${escapeHtml(holiday)}</li>`).join("")
+        : "<li>No holidays today</li>"
+    return `<!DOCTYPE html>
+<html>
+    <head>
+        <base href="${BASE_URL}/">
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="/assets/styles.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>E-Ink Calendar</title>
+    </head>
+    <body>
+        <main class="panel">
+            <header class="topbar" id="cell-0">
+                <div class="clock">Calendar</div>
+                <div class="status">Current Date</div>
+                <div class="wifi"></div>
+            </header>
+            <section class="metrics metrics-calendar" id="cell-1">
+                <article class="metric metric-invert" id="cell-2">
+                    <h2>Day of Week</h2>
+                    <p>${dayOfWeek}</p>
+                </article>
+                <article class="metric" id="cell-3">
+                    <h2>Date</h2>
+                    <p>${date}</p>
+                </article>
+            </section>
+            <section class="content-grid">
+                <article class="card" id="cell-4">
+                    <h3>Holidays</h3>
+                    <ul>
+                        ${holidays}
+                    </ul>
+                </article>
+            </section>
+            <footer class="footer" id="cell-5">
+                <span>Source: Calendar Data</span>
+                <span class="badge" id="cell-6">${calendar ? "OK" : "no data"}</span>
+            </footer>
+        </main>
+    </body>
+</html>`   
 }

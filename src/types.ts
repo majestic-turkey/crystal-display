@@ -1,5 +1,5 @@
 type DataAdapter<T> = {
-    name: "Weather" | "News"
+    name: "Weather" | "News" | "Calendar"
     fetchedAt: string
     data: T | null
 }
@@ -12,4 +12,10 @@ type WeatherData = {
     precipitationProbability: number | null
 }
 
-export type { DataAdapter, WeatherData }
+type CalendarData = {
+    date: string
+    dayOfWeek: string
+    holidays: string[]
+}
+
+export type { DataAdapter, WeatherData, CalendarData }
