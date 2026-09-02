@@ -99,9 +99,15 @@ export function renderCalendarTemplate(calendarData: DataAdapter<CalendarData>):
     const date = calendar ? escapeHtml(calendar.date) : "Date unavailable"
 
     const dayOfWeek = calendar ? escapeHtml(calendar.dayOfWeek) : "Day unavailable"
-    const holidays = calendar && calendar.holidays.length > 0
-        ? calendar.holidays.map(holiday => `<li>${escapeHtml(holiday)}</li>`).join("")
+    const holidays = calendar ? calendar.holidays.slice(0, 8) : []
+    const holidayColumnOne = holidays.slice(0, 4)
+    const holidayColumnTwo = holidays.slice(4, 8)
+    const holidaysColumnOneMarkup = holidayColumnOne.length > 0
+        ? holidayColumnOne.map(holiday => `<li>${escapeHtml(holiday)}</li>`).join("")
         : "<li>No holidays today</li>"
+    const holidaysColumnTwoMarkup = holidayColumnTwo
+        .map(holiday => `<li>${escapeHtml(holiday)}</li>`)
+        .join("")
     return `<!DOCTYPE html>
 <html>
     <head>
@@ -129,11 +135,16 @@ export function renderCalendarTemplate(calendarData: DataAdapter<CalendarData>):
                 </article>
             </section>
             <section class="content-grid">
-                <article class="card" id="cell-4">
+                <article class="card card-calendar-holidays" id="cell-4">
                     <h3>Holidays</h3>
-                    <ul>
-                        ${holidays}
-                    </ul>
+                    <div class="holiday-columns">
+                        <ul class="holiday-list">
+                            ${holidaysColumnOneMarkup}
+                        </ul>
+                        <ul class="holiday-list">
+                            ${holidaysColumnTwoMarkup}
+                        </ul>
+                    </div>
                 </article>
             </section>
             <footer class="footer" id="cell-5">
