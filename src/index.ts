@@ -2,6 +2,8 @@ import Express from 'express'
 import { capture } from './render/capture.js'
 import { reencodePng } from './render/converter.js'
 import { PORT, HOST } from './config.js'
+import { renderTemplate } from './render/template.js'
+import { getWeatherData } from './adapters/weather.js'
 
 const app = Express()
 
@@ -11,11 +13,13 @@ app.get('/health', (_req, res) => {
 
 // Send the index.html file for the preview route
 app.get('/preview', async (req, res) => {
-  if (req.query.mode === '1bit') {
-    const pngBuffer = await capture(req.path)
+  const mode = req.query.mode ? req.query.mode.toString() : null
+  const weather = await getWeatherData()
+  if (mode === '1bit') {
+    const pngBuffer = await capture(renderTemplate(weather))
     return res.type('image/png').send(reencodePng(pngBuffer))
   }
-  res.sendFile('public/index.html', { root: process.cwd() })
+  res.send(renderTemplate(weather))
 })
 
 app.use('/assets', Express.static('public/assets'))

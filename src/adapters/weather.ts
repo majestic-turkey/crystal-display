@@ -1,4 +1,4 @@
-import type { DataAdapter, WeatherData } from "./types.js"
+import type { DataAdapter, WeatherData } from "../types.js"
 import fs from "fs/promises"
 
 const nwsUrl = "https://api.weather.gov/gridpoints/ILN/86,88/forecast/hourly" // Coordinates represent Westerville, OH
