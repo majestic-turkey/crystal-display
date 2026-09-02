@@ -1,7 +1,6 @@
 import pngjs from 'pngjs'
 import { getBrowser } from '../browser.js'
 
-// Capture a screenshot of the given URL and return the path to the saved PNG file
 export async function capture(html: string): Promise<{ data: Buffer, width: number, height: number }> {
     const browser = await getBrowser()
     const page = await browser.newPage({

@@ -11,7 +11,6 @@ app.get('/health', (_req, res) => {
   res.status(200).send('ok')
 })
 
-// Send the index.html file for the preview route
 app.get('/preview', async (req, res) => {
   const mode = req.query.mode ? req.query.mode.toString() : null
   const weather = await getWeatherData()
