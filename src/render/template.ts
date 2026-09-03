@@ -17,7 +17,7 @@ function windDirectionToArrow(direction: string): string {
     return "?";
 }
 
-export function renderWeatherTemplate(weatherData: DataAdapter<WeatherData>): string {
+export function renderWeatherTemplate(weatherData: DataAdapter<WeatherData>, baseUrl: string = BASE_URL): string {
     const weather = weatherData.data;
     const temperature = weather ? `${Math.round(weather.temperature)}F` : "--F";
     const windSpeed = weather?.windSpeed ? escapeHtml(`${weather.windSpeed}`) : "-- mph";
@@ -39,7 +39,7 @@ export function renderWeatherTemplate(weatherData: DataAdapter<WeatherData>): st
     const weatherTemplate = `<!DOCTYPE html>
 <html>
     <head>
-    <base href="${BASE_URL}/">
+    <base href="${baseUrl}/">
         <meta charset="utf-8">
         <link rel="stylesheet" href="/assets/styles.css">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -94,7 +94,7 @@ export function renderWeatherTemplate(weatherData: DataAdapter<WeatherData>): st
     return weatherTemplate
 }
 
-export function renderCalendarTemplate(calendarData: DataAdapter<CalendarData>): string {
+export function renderCalendarTemplate(calendarData: DataAdapter<CalendarData>, baseUrl: string = BASE_URL): string {
     const calendar = calendarData.data
     const date = calendar ? escapeHtml(calendar.date) : "Date unavailable"
 
@@ -111,7 +111,7 @@ export function renderCalendarTemplate(calendarData: DataAdapter<CalendarData>):
     return `<!DOCTYPE html>
 <html>
     <head>
-        <base href="${BASE_URL}/">
+        <base href="${baseUrl}/">
         <meta charset="utf-8">
         <link rel="stylesheet" href="/assets/styles.css">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -156,14 +156,14 @@ export function renderCalendarTemplate(calendarData: DataAdapter<CalendarData>):
 </html>`   
 }
 
-export const renderPhotoTemplate = (photoData: DataAdapter<{ src: string | null }>): string => {
+export const renderPhotoTemplate = (photoData: DataAdapter<{ src: string | null }>, baseUrl: string = BASE_URL): string => {
     const photo = photoData.data;
     const photoSrc = photo?.src ? escapeHtml(photo.src) : null;
 
     return `<!DOCTYPE html>
 <html>
     <head>
-        <base href="${BASE_URL}/">
+        <base href="${baseUrl}/">
         <meta charset="utf-8">
         <link rel="stylesheet" href="/assets/styles.css">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">

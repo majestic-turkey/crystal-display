@@ -15,6 +15,7 @@ app.get('/health', (_req, res) => {
 app.get('/preview', async (req, res) => {
   const mode = req.query.mode ? req.query.mode.toString() : null
   const page = req.query.page ? req.query.page.toString() : PAGE_TYPES[Math.floor(Math.random() * PAGE_TYPES.length)]
+  const requestBaseUrl = `${req.protocol}://${req.get('host')}`
   if (page === 'weather') {
     const { getWeatherData } = await import('./adapters/weather.js')
     const weather = await getWeatherData()
@@ -22,7 +23,7 @@ app.get('/preview', async (req, res) => {
       const pngBuffer = await capture(renderWeatherTemplate(weather))
       return res.type('image/png').send(reencodePng(pngBuffer))
     }
-    res.send(renderWeatherTemplate(weather))
+    res.send(renderWeatherTemplate(weather, requestBaseUrl))
   } else if (page === 'calendar') {
     const { getCalendarData } = await import('./adapters/calendar.js')
     const calendar = await getCalendarData()
@@ -30,7 +31,7 @@ app.get('/preview', async (req, res) => {
       const pngBuffer = await capture(renderCalendarTemplate(calendar))
       return res.type('image/png').send(reencodePng(pngBuffer))
     }
-    res.send(renderCalendarTemplate(calendar))
+    res.send(renderCalendarTemplate(calendar, requestBaseUrl))
   } else if (page === 'photo') {
     const { getPhotoData } = await import('./adapters/photos.js')
     const photo = await getPhotoData()
@@ -38,7 +39,7 @@ app.get('/preview', async (req, res) => {
       const pngBuffer = await capture(renderPhotoTemplate(photo))
       return res.type('image/png').send(reencodePng(pngBuffer))
     }
-    res.send(renderPhotoTemplate(photo))
+    res.send(renderPhotoTemplate(photo, requestBaseUrl))
   }
 })
 
