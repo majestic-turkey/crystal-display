@@ -3,10 +3,9 @@ import Express from 'express'
 import { capture } from './render/capture.js'
 import { reencodePng } from './render/converter.js'
 import { PORT, HOST } from './config.js'
-import { renderWeatherTemplate, renderCalendarTemplate } from './render/template.js'
-import { getWeatherData } from './adapters/weather.js'
+import { renderWeatherTemplate, renderCalendarTemplate, renderPhotoTemplate } from './render/template.js'
 
-const PAGE_TYPES = ['weather', 'calendar']
+const PAGE_TYPES = ['weather', 'calendar', 'photo']
 const app = Express()
 
 app.get('/health', (_req, res) => {
@@ -17,6 +16,7 @@ app.get('/preview', async (req, res) => {
   const mode = req.query.mode ? req.query.mode.toString() : null
   const page = req.query.page ? req.query.page.toString() : PAGE_TYPES[Math.floor(Math.random() * PAGE_TYPES.length)]
   if (page === 'weather') {
+    const { getWeatherData } = await import('./adapters/weather.js')
     const weather = await getWeatherData()
     if (mode === '1bit') {
       const pngBuffer = await capture(renderWeatherTemplate(weather))
@@ -31,6 +31,14 @@ app.get('/preview', async (req, res) => {
       return res.type('image/png').send(reencodePng(pngBuffer))
     }
     res.send(renderCalendarTemplate(calendar))
+  } else if (page === 'photo') {
+    const { getPhotoData } = await import('./adapters/photos.js')
+    const photo = await getPhotoData()
+    if (mode === '1bit') {
+      const pngBuffer = await capture(renderPhotoTemplate(photo))
+      return res.type('image/png').send(reencodePng(pngBuffer))
+    }
+    res.send(renderPhotoTemplate(photo))
   }
 })
 

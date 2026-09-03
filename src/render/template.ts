@@ -155,3 +155,26 @@ export function renderCalendarTemplate(calendarData: DataAdapter<CalendarData>):
     </body>
 </html>`   
 }
+
+export const renderPhotoTemplate = (photoData: DataAdapter<{ src: string | null }>): string => {
+    const photo = photoData.data;
+    const photoSrc = photo?.src ? escapeHtml(photo.src) : null;
+
+    return `<!DOCTYPE html>
+<html>
+    <head>
+        <base href="${BASE_URL}/">
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="/assets/styles.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>E-Ink Photo</title>
+    </head>
+    <body class="photo-screen">
+        <main class="photo-panel" id="cell-0">
+            ${photoSrc
+        ? `<img src="${photoSrc}" alt="Random Photo" class="photo-image photo-image-full">`
+        : `<p class="photo-empty">No photo available</p>`}
+        </main>
+    </body>
+</html>`;
+}
