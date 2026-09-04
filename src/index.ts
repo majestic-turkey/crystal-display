@@ -3,9 +3,9 @@ import Express from 'express'
 import { capture } from './render/capture.js'
 import { reencodePng } from './render/converter.js'
 import { PORT, HOST } from './config.js'
-import { renderWeatherTemplate, renderCalendarTemplate, renderPhotoTemplate } from './render/template.js'
+import { renderWeatherTemplate, renderCalendarTemplate, renderPhotoTemplate, renderNewsTemplate } from './render/template.js'
 
-const PAGE_TYPES = ['weather', 'calendar', 'photo']
+const PAGE_TYPES = ['weather', 'calendar', 'photo', 'news']
 const app = Express()
 
 app.get('/health', (_req, res) => {
@@ -40,6 +40,14 @@ app.get('/preview', async (req, res) => {
       return res.type('image/png').send(reencodePng(pngBuffer))
     }
     res.send(renderPhotoTemplate(photo, requestBaseUrl))
+  } else if (page === 'news') {
+    const { getNewsData } = await import('./adapters/news.js')
+    const news = await getNewsData()
+    if (mode === '1bit') {
+      const pngBuffer = await capture(renderNewsTemplate(news))
+      return res.type('image/png').send(reencodePng(pngBuffer))
+    }
+    res.send(renderNewsTemplate(news, requestBaseUrl))
   }
 })
 
