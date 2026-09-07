@@ -22,4 +22,14 @@ type PhotoData = {
     src: string
 }
 
-export type { DataAdapter, WeatherData, CalendarData, PhotoData }
+type Headline = {
+    title: string
+    url: string
+    publishedAt: string
+}
+
+type NewsData = {
+    headlines: Headline[]
+}
+
+export type { DataAdapter, WeatherData, CalendarData, PhotoData, Headline, NewsData }

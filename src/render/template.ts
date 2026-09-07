@@ -1,4 +1,4 @@
-import type { CalendarData, DataAdapter, WeatherData } from "../types.js";
+import type { CalendarData, DataAdapter, NewsData, WeatherData } from "../types.js";
 import { escapeHtml } from "../helpers.js"
 import { BASE_URL } from "../config.js"
 
@@ -17,7 +17,7 @@ function windDirectionToArrow(direction: string): string {
     return "?";
 }
 
-export function renderWeatherTemplate(weatherData: DataAdapter<WeatherData>): string {
+export function renderWeatherTemplate(weatherData: DataAdapter<WeatherData>, baseUrl: string = BASE_URL): string {
     const weather = weatherData.data;
     const temperature = weather ? `${Math.round(weather.temperature)}F` : "--F";
     const windSpeed = weather?.windSpeed ? escapeHtml(`${weather.windSpeed}`) : "-- mph";
@@ -39,7 +39,7 @@ export function renderWeatherTemplate(weatherData: DataAdapter<WeatherData>): st
     const weatherTemplate = `<!DOCTYPE html>
 <html>
     <head>
-    <base href="${BASE_URL}/">
+    <base href="${baseUrl}/">
         <meta charset="utf-8">
         <link rel="stylesheet" href="/assets/styles.css">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -94,7 +94,7 @@ export function renderWeatherTemplate(weatherData: DataAdapter<WeatherData>): st
     return weatherTemplate
 }
 
-export function renderCalendarTemplate(calendarData: DataAdapter<CalendarData>): string {
+export function renderCalendarTemplate(calendarData: DataAdapter<CalendarData>, baseUrl: string = BASE_URL): string {
     const calendar = calendarData.data
     const date = calendar ? escapeHtml(calendar.date) : "Date unavailable"
 
@@ -111,7 +111,7 @@ export function renderCalendarTemplate(calendarData: DataAdapter<CalendarData>):
     return `<!DOCTYPE html>
 <html>
     <head>
-        <base href="${BASE_URL}/">
+        <base href="${baseUrl}/">
         <meta charset="utf-8">
         <link rel="stylesheet" href="/assets/styles.css">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -156,14 +156,54 @@ export function renderCalendarTemplate(calendarData: DataAdapter<CalendarData>):
 </html>`   
 }
 
-export const renderPhotoTemplate = (photoData: DataAdapter<{ src: string | null }>): string => {
+export function renderNewsTemplate(newsData: DataAdapter<NewsData>, baseUrl: string = BASE_URL): string {
+    const news = newsData.data
+    const headlines = news ? news.headlines.slice(0, 5) : []
+    const headlinesMarkup = headlines.length > 0
+        ? headlines.map((headline, index) => `<li><span class="headline-index">${index + 1}</span><span class="headline-title">${escapeHtml(headline.title)}</span></li>`).join("")
+        : `<li>${news ? "No headlines available" : "Headlines unavailable"}</li>`
+
+    return `<!DOCTYPE html>
+<html>
+    <head>
+        <base href="${baseUrl}/">
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="/assets/styles.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>E-Ink News</title>
+    </head>
+    <body>
+        <main class="panel panel-news">
+            <header class="topbar" id="cell-0">
+                <div class="clock">News</div>
+                <div class="status">Good News Network</div>
+                <div class="wifi"></div>
+            </header>
+            <section class="content-grid" id="cell-1">
+                <article class="card card-news" id="cell-2">
+                    <h3>Today's Good News</h3>
+                    <ul class="headline-list">
+                        ${headlinesMarkup}
+                    </ul>
+                </article>
+            </section>
+            <footer class="footer" id="cell-3">
+                <span>Source: Good News Network</span>
+                <span class="badge" id="cell-4">${news ? "OK" : "no data"}</span>
+            </footer>
+        </main>
+    </body>
+</html>`
+}
+
+export const renderPhotoTemplate = (photoData: DataAdapter<{ src: string | null }>, baseUrl: string = BASE_URL): string => {
     const photo = photoData.data;
     const photoSrc = photo?.src ? escapeHtml(photo.src) : null;
 
     return `<!DOCTYPE html>
 <html>
     <head>
-        <base href="${BASE_URL}/">
+        <base href="${baseUrl}/">
         <meta charset="utf-8">
         <link rel="stylesheet" href="/assets/styles.css">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
