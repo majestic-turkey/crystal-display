@@ -31,7 +31,7 @@ app.get('/preview', async (req, res) => {
   }
 
   const requestBaseUrl = `${req.protocol}://${req.get('host')}`
-  return res.send(await renderPageHtml(page, requestBaseUrl))
+  return res.send(await renderPageHtml(page))
 })
 
 // The device's endpoint. Serves only what is already on disk — a browser must
