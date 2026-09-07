@@ -1,6 +1,6 @@
-import pngjs from 'pngjs'
+export type DitherMode = 'threshold' | 'dither'
 
-export function ditherImage(imageData: Buffer, width: number, height: number): Float32Array {
+export function ditherImage(imageData: Buffer, width: number, height: number, mode: DitherMode = 'threshold'): Float32Array {
     const luminanceBuffer = new Float32Array(width * height)
     const ditheredData = new Float32Array(width * height)
 
@@ -26,6 +26,7 @@ export function ditherImage(imageData: Buffer, width: number, height: number): F
             const oldPixel = luminanceBuffer[index] ?? 0
             const newPixel = oldPixel < 0.5 ? 0 : 1
             ditheredData[index] = newPixel
+            if (mode === 'threshold') continue // no error diffusion: keeps text and rules crisp
             const error = oldPixel - newPixel
             if (x + 1 < width) addError(index + 1, error * 7 / 16)
             if (x - 1 >= 0 && y + 1 < height) addError(index + width - 1, error * 3 / 16)
