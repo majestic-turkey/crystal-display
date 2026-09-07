@@ -73,5 +73,6 @@ for (const signal of ['SIGTERM', 'SIGINT'] as const) {
     server.close(() => {
       void closeBrowser().then(() => process.exit(0))
     })
+    server.closeAllConnections()
   })
 }

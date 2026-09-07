@@ -31,7 +31,7 @@ export function getLastMeta(): RenderMeta | null {
     return lastMeta
 }
 
-function parseMeta(raw: string): RenderMeta | null {
+export function parseMeta(raw: string): RenderMeta | null {
     try {
         const meta = JSON.parse(raw)
         if (typeof meta?.generatedAt !== 'string') return null

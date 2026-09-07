@@ -15,10 +15,13 @@
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "tsx --test \"test/**/*.test.ts\"",
     "dev": "tsx watch ./src/index.ts",
-    "build": "tsc && node -e \"require('fs').cpSync('src/fixtures','dist/fixtures',{recursive:true})\"",
-    "start": "node dist/index.js"
+    "build": "tsc -p tsconfig.build.json && node -e \"require('fs').cpSync('src/fixtures','dist/fixtures',{recursive:true})\"",
+    "start": "node dist/index.js",
+    "test:e2e": "tsx --test \"test/**/*.e2e.ts\"",
+    "test:all": "npm run test && npm run test:e2e",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "express": "^5.2.1",

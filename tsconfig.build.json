@@ -1,0 +1,13 @@
+{
+  // Production build: compiles src/ only, so dist/ (and the Docker image) carries
+  // nothing from test/. `npm run typecheck` uses the base config, which covers both.
+  //
+  // rootDir lives here rather than in the base config because test/ sits outside
+  // src/ and would otherwise be rejected as being outside the root directory.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "./src"
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}

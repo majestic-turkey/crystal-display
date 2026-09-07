@@ -44,7 +44,7 @@ export function regenerate(): Promise<void> {
     return inFlight
 }
 
-function msUntilNextRefresh(now: Date): number {
+export function msUntilNextRefresh(now: Date): number {
     const next = new Date(now)
     next.setMinutes(REFRESH_MINUTE, 0, 0)
     if (next <= now) next.setHours(next.getHours() + 1)
