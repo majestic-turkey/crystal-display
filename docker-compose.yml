@@ -44,7 +44,7 @@ services:
       homepage.enable: "true"
       homepage.title: "Crystal Display"
       homepage.url: "https://display.thesaltworks.io"
-      homepage.description: "TODO"
+      homepage.description: "Render system for the ePaper display"
       homepage.icon: "💎"
 
 volumes:
