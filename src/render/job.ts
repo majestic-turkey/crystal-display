@@ -21,7 +21,7 @@ async function renderOnce(): Promise<void> {
     const started = Date.now()
 
     const html = await renderPageHtml(page)
-    const png = await capture(html)
+    const png = await capture(html, { priority: true })
     const bits = ditherImage(png.data, png.width, png.height, ditherModeFor(page))
     const bmp = encodeMonoBmp(bits, png.width, png.height)
 

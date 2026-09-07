@@ -1,6 +1,6 @@
 import './env.js'
 import Express from 'express'
-import { capture } from './render/capture.js'
+import { capture, CaptureBusyError } from './render/capture.js'
 import { reencodePng } from './render/converter.js'
 import { PORT, HOST } from './config.js'
 import { getCachedRender } from './render/cache.js'
@@ -26,12 +26,19 @@ app.get('/preview', async (req, res) => {
   // Captures omit the request base URL so the screenshot browser loads assets
   // over the loopback BASE_URL rather than back through nginx.
   if (mode === '1bit') {
-    const png = await capture(await renderPageHtml(page))
-    return res.type('image/png').send(reencodePng(png, ditherModeFor(page)))
+    try {
+      const png = await capture(await renderPageHtml(page))
+      return res.type('image/png').send(reencodePng(png, ditherModeFor(page)))
+    } catch (error) {
+      if (error instanceof CaptureBusyError) {
+        return res.status(503).set('Retry-After', '5').send('Renderer is busy, try again shortly')
+      }
+      throw error
+    }
   }
 
   const requestBaseUrl = `${req.protocol}://${req.get('host')}`
-  return res.send(await renderPageHtml(page))
+  return res.send(await renderPageHtml(page, requestBaseUrl))
 })
 
 // The device's endpoint. Serves only what is already on disk — a browser must
