@@ -1,0 +1,31 @@
+{
+  "configurations": [
+    {
+      "name": "Arduino ESP32",
+      "includePath": [
+        "${workspaceFolder}/firmware/crystal-display",
+        "${workspaceFolder}/firmware/libraries/waveshare-e-Paper/src",
+        "${workspaceFolder}/firmware/libraries/waveshare-e-Paper/src/utility",
+        "C:/Users/sodiu/AppData/Local/Arduino15/packages/esp32/hardware/esp32/3.3.11/cores/esp32",
+        "C:/Users/sodiu/AppData/Local/Arduino15/packages/esp32/hardware/esp32/3.3.11/variants/esp32",
+        "C:/Users/sodiu/AppData/Local/Arduino15/packages/esp32/hardware/esp32/3.3.11/libraries/**",
+        "C:/Users/sodiu/AppData/Local/Arduino15/packages/esp32/tools/esp32-libs/3.3.11/include/**"
+      ],
+      "forcedInclude": [
+        "C:/Users/sodiu/AppData/Local/Arduino15/packages/esp32/hardware/esp32/3.3.11/cores/esp32/Arduino.h"
+      ],
+      "defines": [
+        "ARDUINO=10607",
+        "ESP32",
+        "ARDUINO_ARCH_ESP32",
+        "ARDUINO_ESP32_DEV",
+        "F_CPU=240000000L"
+      ],
+      "compilerPath": "C:/Users/sodiu/AppData/Local/Arduino15/packages/esp32/tools/esp-x32/2601/bin/xtensa-esp32-elf-g++.exe",
+      "cStandard": "c11",
+      "cppStandard": "c++17",
+      "intelliSenseMode": "gcc-x64"
+    }
+  ],
+  "version": 4
+}
