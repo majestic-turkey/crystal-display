@@ -30,6 +30,7 @@
 ******************************************************************************/
 #include "EPD_7in5_V2.h"
 #include "Debug.h"
+#define EPD_BUSY_TIMEOUT_MS 30000
 
 /******************************************************************************
 function :	Software reset
@@ -83,15 +84,23 @@ static void EPD_SendData2(UBYTE *pData, UDOUBLE len)
 function :	Wait until the busy_pin goes LOW
 parameter:
 ******************************************************************************/
-static void EPD_WaitUntilIdle(void)
+static bool EPD_WaitUntilIdle(void)
 {
     Debug("e-Paper busy\r\n");
-	do{
-		DEV_Delay_ms(5);  
-	}while(!(DEV_Digital_Read(EPD_BUSY_PIN)));   
-	DEV_Delay_ms(5);      
+    UDOUBLE waited = 0;
+    do {
+        DEV_Delay_ms(5);
+        waited += 5;
+        if (waited >= EPD_BUSY_TIMEOUT_MS) {
+            Debug("e-Paper busy timeout\r\n");
+            return false;
+        }
+    } while (!(DEV_Digital_Read(EPD_BUSY_PIN)));
+    DEV_Delay_ms(5);
     Debug("e-Paper busy release\r\n");
+    return true;
 }
+
 /******************************************************************************
 function :	Turn On Display
 parameter:

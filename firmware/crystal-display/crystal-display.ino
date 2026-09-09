@@ -14,6 +14,7 @@
 #define BMP_TOTAL_BYTES (BMP_HEADER_BYTES + FB_SIZE) // 48062
 #define WIFI_TIMEOUT_MS 20000
 #define READ_STALL_MS 5000
+#define DEEP_CLEAN_EVERY 24
 
 // 60 seconds while testing. Change to 3600 once the full cucle works.
 // uint64_t keeps microsecond math from overflowing
@@ -45,21 +46,28 @@ static bool connectWifi()
     return true;
 }
 
-static bool readFully(WiFiClient *stream, uint8_t *dest, size_t count) {
+static bool readFully(WiFiClient *stream, uint8_t *dest, size_t count)
+{
     size_t got = 0;
     unsigned long lastData = millis();
 
-    while (got < count) {
+    while (got < count)
+    {
         const int n = stream->read(dest + got, count - got);
-        if (n > 0) {
+        if (n > 0)
+        {
             got += (size_t)n;
             lastData = millis();
-        } else {
-            if (!stream->connected() && stream->available() == 0) {
+        }
+        else
+        {
+            if (!stream->connected() && stream->available() == 0)
+            {
                 Serial.println("connection closed mid-read");
                 return false;
             }
-            if (millis() - lastData > READ_STALL_MS) {
+            if (millis() - lastData > READ_STALL_MS)
+            {
                 Serial.printf("stalled at %u of %u\n", (unsigned)got, (unsigned)count);
                 return false;
             }
@@ -124,7 +132,8 @@ static bool fetchImage()
     return true;
 }
 
-static void goToSleep() {
+static void goToSleep()
+{
     Serial.printf("sleeping %llu seconds\n", SLEEP_SECONDS);
     Serial.flush();
     esp_sleep_enable_timer_wakeup(SLEEP_SECONDS * 1000000ULL);
@@ -149,13 +158,27 @@ void setup()
 
     if (ok)
     {
-        Serial.println("panel init");
+        const bool deepClean = (bootCount % DEEP_CLEAN_EVERY == 1);
+        Serial.printf("panel init (%s)\n", deepClean ? "full" : "fast");
+
         DEV_Module_Init();
-        EPD_7IN5_V2_Init();
+        if (deepClean)
+        {
+            EPD_7IN5_V2_Init();
+            EPD_7IN5_V2_Clear();
+        }
+        else
+        {
+            EPD_7IN5_V2_Init_Fast();
+        }
+        EPD_7IN5_V2_Display(framebuffer);
+
         EPD_7IN5_V2_Display(framebuffer);
         // Required before ESP32 sleeps
         EPD_7IN5_V2_Sleep();
-    } else {
+    }
+    else
+    {
         Serial.println("fetch failed, leaving previous image");
     }
 
