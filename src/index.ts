@@ -8,6 +8,8 @@ import { startScheduler } from './render/job.js'
 import { closeBrowser } from './browser.js'
 import { ditherModeFor, isPageType, randomPage, renderPageHtml } from './render/pages.js'
 
+const DEVICE_TOKEN = process.env.DEVICE_TOKEN
+
 const app = Express()
 
 app.get('/health', (_req, res) => {
@@ -43,10 +45,14 @@ app.get('/preview', async (req, res) => {
 
 // The device's endpoint. Serves only what is already on disk — a browser must
 // never be launched while the panel is awake waiting on the response.
-app.get('/render.bmp', (_req, res) => {
+app.get('/render.bmp', (req, res) => {
   const cached = getCachedRender()
   if (!cached) {
     return res.status(503).set('Retry-After', '3600').send('No render available yet')
+  }
+  const token = req.headers['authorization']?.toString() ?? ''
+  if (token !== `Bearer ${DEVICE_TOKEN}`) {
+    return res.status(401).send('Unauthorized')
   }
 
   res.type('image/bmp')
