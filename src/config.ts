@@ -3,5 +3,8 @@ const HOST = '0.0.0.0'
 const BASE_URL = process.env.BASE_URL || `http://127.0.0.1:${PORT}`
 const DATA_DIR = process.env.DATA_DIR || 'data' // persistent volume in Docker; a plain cwd-relative dir locally
 const DEVICE_TOKEN = process.env.DEVICE_TOKEN // must be set in Docker environment
+if (!DEVICE_TOKEN) {
+  throw new Error('DEVICE_TOKEN must be set in the environment')
+}
 
 export { PORT, HOST, BASE_URL, DATA_DIR, DEVICE_TOKEN }
