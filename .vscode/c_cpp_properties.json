@@ -4,6 +4,7 @@
       "name": "Arduino ESP32",
       "includePath": [
         "${workspaceFolder}/firmware/crystal-display",
+        "${workspaceFolder}/firmware/epd_demo",
         "${workspaceFolder}/firmware/libraries/waveshare-e-Paper/src",
         "${workspaceFolder}/firmware/libraries/waveshare-e-Paper/src/utility",
         "C:/Users/sodiu/AppData/Local/Arduino15/packages/esp32/hardware/esp32/3.3.11/cores/esp32",

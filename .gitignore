@@ -3,5 +3,4 @@ node_modules/
 dist/
 .env
 data/
-firmware/crystal-display/secrets.h
-firmware/secrets.h
+firmware/**/secrets.h
