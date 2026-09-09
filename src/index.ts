@@ -50,7 +50,7 @@ app.get('/render.bmp', (req, res) => {
   if (!cached) {
     return res.status(503).set('Retry-After', '3600').send('No render available yet')
   }
-  const token = req.headers['Authorization']?.toString() ?? ''
+  const token = req.headers['authorization']?.toString() ?? ''
   if (token !== `Bearer ${DEVICE_TOKEN}`) {
     return res.status(401).send('Unauthorized')
   }
