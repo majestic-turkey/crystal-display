@@ -15,9 +15,9 @@
 #define WIFI_TIMEOUT_MS 20000
 #define READ_STALL_MS 5000
 
-// 60 seconds while testing. Change to 3600 once the full cucle works.
+// 60 seconds while testing. Change to 3600 once the full cycle works.
 // uint64_t keeps microsecond math from overflowing
-static const uint64_t SLEEP_SECONDS = 60;
+static const uint64_t SLEEP_SECONDS = 3600;
 
 // Survives deep sleep. Stored in RTC memory.
 RTC_DATA_ATTR int bootCount = 0;
