@@ -17,7 +17,7 @@
 
 // 60 seconds while testing. Change to 3600 once the full cycle works.
 // uint64_t keeps microsecond math from overflowing
-static const uint64_t SLEEP_SECONDS = 3600;
+static const uint64_t SLEEP_SECONDS = 600; // Changed to 10 minutes since the unit will remain plugged in
 
 // Survives deep sleep. Stored in RTC memory.
 RTC_DATA_ATTR int bootCount = 0;
