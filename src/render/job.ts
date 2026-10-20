@@ -46,7 +46,7 @@ export function regenerate(): Promise<void> {
 
 export function msUntilNextRefresh(now: Date): number {
     const next = new Date(now)
-    next.setMinutes(REFRESH_MINUTE, 0, 0)
+    next.setMinutes(now.getMinutes() + 10, 0, 0)
     if (next <= now) next.setHours(next.getHours() + 1)
     return next.getTime() - now.getTime()
 }
