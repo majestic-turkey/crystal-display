@@ -52,7 +52,7 @@ export async function getScoresData(): Promise<DataAdapter<ScoresData>> {
             scores = JSON.parse(raw) as ScoresData
         } else {
             const response = await fetch(`${SCOREBOARD_URL}?groups=${BIG_TEN_GROUP}&dates=${espnDateKey(new Date())}`, {
-                headers: { "User-Agent": "display.thesaltworks.io (contact: sodium.smith@gmail.com)" },
+                headers: { "User-Agent": "display.thesaltworks.io" },
                 signal: AbortSignal.timeout(5000)
             })
             if (!response.ok) throw new Error(`Failed to fetch scores feed: ${response.status} ${response.statusText}`)
