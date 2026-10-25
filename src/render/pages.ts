@@ -1,12 +1,13 @@
 import type { DitherMode } from './dither.js'
-import { renderWeatherTemplate, renderCalendarTemplate, renderPhotoTemplate, renderNewsTemplate } from './template.js'
+import { renderWeatherTemplate, renderCalendarTemplate, renderPhotoTemplate, renderNewsTemplate, renderScoresTemplate } from './template.js'
 
-export type PageType = 'weather' | 'calendar' | 'photo' | 'news'
+export type PageType = 'weather' | 'calendar' | 'photo' | 'news' | 'scores'
 
 export const PAGE_TYPES: PageType[] = ['weather', 'calendar', 'photo', 'news']
+export const ALL_PAGES: PageType[] = [...PAGE_TYPES, 'scores']
 
 export function isPageType(value: string): value is PageType {
-  return (PAGE_TYPES as string[]).includes(value)
+  return (ALL_PAGES as string[]).includes(value)
 }
 
 export function randomPage(): PageType {
@@ -35,6 +36,10 @@ export async function renderPageHtml(page: PageType, baseUrl?: string): Promise<
   if (page === 'news') {
     const { getNewsData } = await import('../adapters/news.js')
     return renderNewsTemplate(await getNewsData(), baseUrl)
+  }
+  if (page === 'scores') {
+    const { getScoresData } = await import('../adapters/scores.js')
+    return renderScoresTemplate(await getScoresData(), baseUrl)
   }
   const { getPhotoData } = await import('../adapters/photos.js')
   return renderPhotoTemplate(await getPhotoData(), baseUrl)

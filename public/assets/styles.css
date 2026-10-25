@@ -391,6 +391,132 @@ body {
   -webkit-box-orient: vertical;
 }
 
+.panel-scores-no-hero {
+  grid-template-rows: 56px 1fr 44px;
+}
+
+/* Fixed row counts keep cards the same size whether 2 games or 8 are on;
+   8 is the most that fit under the hero (18 teams, one game is Ohio State's). */
+.score-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(4, minmax(0, 1fr));
+  min-height: 0;
+  overflow: hidden;
+}
+
+.panel-scores-no-hero .score-grid {
+  grid-template-rows: repeat(5, minmax(0, 1fr));
+}
+
+/* Borders go on top/left and are dropped on the first row and column, so they
+   never double up against the hero, topbar, or footer whatever the game count. */
+.score-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 104px;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  column-gap: 12px;
+  align-items: center;
+  padding: 4px 14px;
+  border-top: 2px solid #000;
+  border-left: 2px solid #000;
+  min-height: 0;
+}
+
+.score-card:nth-child(-n + 2) {
+  border-top: none;
+}
+
+.score-card:nth-child(odd) {
+  border-left: none;
+}
+
+.team {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 22px;
+  line-height: 1.1;
+  min-width: 0;
+}
+
+.team-leading {
+  font-weight: 700;
+}
+
+.rank {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.team-score {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.game-status {
+  grid-column: 2;
+  grid-row: 1 / -1;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border-left: 1px solid #000;
+  padding-left: 10px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.score-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 170px;
+  align-items: center;
+  padding: 0 24px;
+}
+
+.score-hero .team {
+  font-size: 40px;
+  gap: 10px;
+  padding: 0 24px;
+}
+
+.score-hero .team:first-child {
+  padding-left: 0;
+}
+
+.score-hero .team + .team {
+  border-left: 2px solid #fff;
+}
+
+.score-hero .team-score {
+  font-size: 60px;
+  line-height: 1;
+}
+
+.score-hero .rank {
+  font-size: 22px;
+}
+
+.score-hero .game-status {
+  grid-column: 3;
+  grid-row: 1;
+  align-self: center;
+  height: 72px;
+  border-left: 2px solid #fff;
+  padding-left: 16px;
+  font-size: 22px;
+}
+
+.score-empty {
+  grid-column: 1 / -1;
+  grid-row: 1 / -1;
+  align-self: center;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+}
+
 body.photo-screen {
   background-color: #000;
 }

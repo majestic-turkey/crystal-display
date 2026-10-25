@@ -1,4 +1,4 @@
-import type { CalendarData, DataAdapter, NewsData, WeatherData } from "../types.js";
+import type { CalendarData, DataAdapter, GameScore, NewsData, ScoresData, TeamScore, WeatherData } from "../types.js";
 import { escapeHtml } from "../helpers.js"
 import { BASE_URL } from "../config.js"
 
@@ -15,6 +15,66 @@ function windDirectionToArrow(direction: string): string {
     if (["SE"].includes(normalized)) return "↖";
 
     return "?";
+}
+
+function teamLine(team: TeamScore, game: GameScore, opponent: TeamScore): string {
+    const leading = game.state !== "pre" && team.score > opponent.score
+    const rank = team.rank ? `<span class="rank">${team.rank}</span>` : "";
+    const score = game.state === "pre" ? "" : String(team.score)
+    return `<div class="team${leading ? " team-leading" : ""}">${rank}<span class="team-name">${escapeHtml(team.name)}</span><span class="team-score">${score}</span></div>`
+}
+
+function gameMarkup(game: GameScore, className: string): string {
+    return `<article class="${className}">
+        ${teamLine(game.away, game, game.home)}
+        ${teamLine(game.home, game, game.away)}
+        <div class="game-status">${escapeHtml(game.detail)}</div>
+    </article>`
+}
+
+export function renderScoresTemplate(scoresData: DataAdapter<ScoresData>, baseUrl: string = BASE_URL): string {
+    const {ohioState, others } = scoresData.data ?? { ohioState: null, others: []}
+    
+    const heroMarkup = ohioState ? gameMarkup(ohioState, "score-hero metric-invert") : ""
+    const panelClass = ohioState ? "panel" : "panel panel-scores-no-hero"
+
+    const othersMarkup = others.length > 0
+        ? others.slice(0, 10).map(game => gameMarkup(game, "score-card")).join("")
+        : `<p class="score-empty">${scoresData.data ? "No other Big Ten games today" : "Scores unavailable"}</p>`;
+    const fetchedAt = new Date(scoresData.fetchedAt).toLocaleString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        timeZone: "America/New_York",
+    });
+
+    // No cell-N ids here: styles.css targets several of those for the weather layout.
+    return `<!DOCTYPE html>
+<html>
+    <head>
+        <base href="${baseUrl}/">
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="/assets/styles.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>E-Ink Scores</title>
+    </head>
+    <body>
+        <main class="${panelClass}">
+            <header class="topbar">
+                <div class="clock">Big Ten</div>
+                <div class="status">Saturday Scores</div>
+                <div class="wifi">Updated ${fetchedAt}</div>
+            </header>
+            ${heroMarkup}
+            <section class="score-grid">
+                ${othersMarkup}
+            </section>
+            <footer class="footer">
+                <span>Source: ESPN</span>
+                <span class="badge">${scoresData.data ? "OK" : "no data"}</span>
+            </footer>
+        </main>
+    </body>
+</html>`;
 }
 
 export function renderWeatherTemplate(weatherData: DataAdapter<WeatherData>, baseUrl: string = BASE_URL): string {

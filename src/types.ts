@@ -1,5 +1,5 @@
 type DataAdapter<T> = {
-    name: "Weather" | "News" | "Calendar" | "Photo"
+    name: "Weather" | "News" | "Calendar" | "Photo" | "Scores"
     fetchedAt: string
     data: T | null
 }
@@ -32,4 +32,23 @@ type NewsData = {
     headlines: Headline[]
 }
 
-export type { DataAdapter, WeatherData, CalendarData, PhotoData, Headline, NewsData }
+type TeamScore = {
+    id: string
+    name: string
+    score: number
+    rank: number | null
+}
+
+type GameScore = {
+    state: "pre" | "in" | "post"
+    detail: string
+    home: TeamScore
+    away: TeamScore
+}
+
+type ScoresData = {
+    ohioState: GameScore | null
+    others: GameScore[]
+}
+
+export type { DataAdapter, WeatherData, CalendarData, PhotoData, Headline, NewsData, TeamScore, GameScore, ScoresData }

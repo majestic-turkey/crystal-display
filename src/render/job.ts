@@ -4,20 +4,43 @@ import { ditherImage } from './dither.js'
 import { getLastMeta, loadCache, writeCache, type RenderMeta } from './cache.js'
 import { PAGE_TYPES, ditherModeFor, renderPageHtml, type PageType } from './pages.js'
 
-const REFRESH_MINUTE = 50 // the device wakes on the hour; render just before it does
+// const REFRESH_MINUTE = 50 // the device wakes on the hour; render just before it does
 const STALE_AFTER_MS = 90 * 60 * 1000
+const SCORES_START_HOUR = 12
+const SCORES_END_HOUR = 23
 
 // One render at a time: a boot render and a timer tick must not open two pages at once.
 let inFlight: Promise<void> | null = null
 
-function nextPage(): { page: PageType; rotationIndex: number } {
+export function isScoresWindow(now: Date): boolean {
+    const parts = new Intl.DateTimeFormat("en-US", {
+        timeZone: "America/New_York",
+        weekday: "short",
+        hour: "numeric",
+        hourCycle: "h23",
+    }).formatToParts(now)
+    const weekday = parts.find(part => part.type === "weekday")?.value
+    const hour = Number(parts.find(part => part.type === "hour")?.value)
+    return weekday === "Sat" && hour >= SCORES_START_HOUR && hour < SCORES_END_HOUR
+}
+
+async function hasScoresToShow(): Promise<boolean> {
+    const { getScoresData } = await import('../adapters/scores.js')
+    const { data } = await getScoresData()
+    return data !== null && (data.ohioState !== null || data.others.length > 0)
+}
+
+async function nextPage(now: Date): Promise<{ page: PageType; rotationIndex: number }> {
     const index = getLastMeta()?.rotationIndex ?? 0
+    if (isScoresWindow(now) && await hasScoresToShow()) {
+        return { page: 'scores', rotationIndex: index }
+    }
     const page = PAGE_TYPES[index % PAGE_TYPES.length]!
     return { page, rotationIndex: (index + 1) % PAGE_TYPES.length }
 }
 
 async function renderOnce(): Promise<void> {
-    const { page, rotationIndex } = nextPage()
+    const { page, rotationIndex } = await nextPage(new Date())
     const started = Date.now()
 
     const html = await renderPageHtml(page)

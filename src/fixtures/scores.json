@@ -1,0 +1,58 @@
+{
+  "ohioState": {
+    "state": "in",
+    "detail": "8:12 - 3rd",
+    "home": { "id": "213", "name": "PSU", "score": 17, "rank": null },
+    "away": { "id": "194", "name": "OSU", "score": 24, "rank": 4 }
+  },
+  "others": [
+    {
+      "state": "post",
+      "detail": "Final/OT",
+      "home": { "id": "130", "name": "MICH", "score": 6, "rank": null },
+      "away": { "id": "84", "name": "IU", "score": 13, "rank": 6 }
+    },
+    {
+      "state": "post",
+      "detail": "Final",
+      "home": { "id": "77", "name": "NU", "score": 42, "rank": 24 },
+      "away": { "id": "164", "name": "RUTG", "score": 14, "rank": null }
+    },
+    {
+      "state": "post",
+      "detail": "Final",
+      "home": { "id": "356", "name": "ILL", "score": 21, "rank": null },
+      "away": { "id": "2483", "name": "ORE", "score": 10, "rank": null }
+    },
+    {
+      "state": "in",
+      "detail": "14:48 - 4th",
+      "home": { "id": "26", "name": "UCLA", "score": 28, "rank": 9 },
+      "away": { "id": "127", "name": "MSU", "score": 7, "rank": null }
+    },
+    {
+      "state": "in",
+      "detail": "10:33 - 4th",
+      "home": { "id": "135", "name": "MINN", "score": 10, "rank": null },
+      "away": { "id": "2294", "name": "IOWA", "score": 3, "rank": 15 }
+    },
+    {
+      "state": "in",
+      "detail": "Halftime",
+      "home": { "id": "264", "name": "WASH", "score": 14, "rank": null },
+      "away": { "id": "2509", "name": "PUR", "score": 14, "rank": null }
+    },
+    {
+      "state": "pre",
+      "detail": "3:30 PM",
+      "home": { "id": "120", "name": "MD", "score": 0, "rank": null },
+      "away": { "id": "158", "name": "NEB", "score": 0, "rank": null }
+    },
+    {
+      "state": "pre",
+      "detail": "7:30 PM",
+      "home": { "id": "275", "name": "WIS", "score": 0, "rank": null },
+      "away": { "id": "30", "name": "USC", "score": 0, "rank": 16 }
+    }
+  ]
+}
