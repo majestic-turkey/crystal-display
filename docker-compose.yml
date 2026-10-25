@@ -16,6 +16,7 @@ services:
       DATA_DIR: /app/data
       CHECKIDAY_API_KEY: ${CHECKIDAY_API_KEY:?Set CHECKIDAY_API_KEY in .env}
       DEVICE_TOKEN: ${DEVICE_TOKEN:?Set DEVICE_TOKEN in .env}
+      FORCE_PAGE: ${FORCE_PAGE:-}
 
     # Bind only to localhost; nginx on VPS forwards to this.
     ports:

@@ -2,7 +2,7 @@ import { capture } from './capture.js'
 import { encodeMonoBmp } from './bitmap.js'
 import { ditherImage } from './dither.js'
 import { getLastMeta, loadCache, writeCache, type RenderMeta } from './cache.js'
-import { PAGE_TYPES, ditherModeFor, renderPageHtml, type PageType } from './pages.js'
+import { PAGE_TYPES, ditherModeFor, isPageType, renderPageHtml, type PageType } from './pages.js'
 
 // const REFRESH_MINUTE = 50 // the device wakes on the hour; render just before it does
 const STALE_AFTER_MS = 90 * 60 * 1000
@@ -31,7 +31,11 @@ async function hasScoresToShow(): Promise<boolean> {
 }
 
 async function nextPage(now: Date): Promise<{ page: PageType; rotationIndex: number }> {
+    const forced = process.env.FORCE_PAGE
     const index = getLastMeta()?.rotationIndex ?? 0
+    if (forced && isPageType(forced)) {
+        return { page: forced, rotationIndex: index }
+    }
     if (isScoresWindow(now) && await hasScoresToShow()) {
         return { page: 'scores', rotationIndex: index }
     }
