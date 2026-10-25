@@ -1,6 +1,6 @@
 import { test, describe } from 'node:test'
 import assert from 'node:assert/strict'
-import { PAGE_TYPES, isPageType, ditherModeFor, renderPageHtml, randomPage } from '../src/render/pages.js'
+import { PAGE_TYPES, ALL_PAGES, isPageType, ditherModeFor, renderPageHtml, randomPage } from '../src/render/pages.js'
 
 // Each page's <title>, so a template that quietly falls through is caught.
 const EXPECTED_TITLE: Record<string, string> = {
@@ -8,15 +8,24 @@ const EXPECTED_TITLE: Record<string, string> = {
     calendar: 'E-Ink Calendar',
     photo: 'E-Ink Photo',
     news: 'E-Ink News',
+    scores: 'E-Ink Scores',
+    psalm: 'E-Ink Psalm',
 }
 
 describe('page registry', () => {
     test('covers every page the templates provide', () => {
-        assert.deepEqual([...PAGE_TYPES].sort(), Object.keys(EXPECTED_TITLE).sort())
+        assert.deepEqual([...ALL_PAGES].sort(), Object.keys(EXPECTED_TITLE).sort())
+    })
+
+    test('keeps the scheduled pages out of the rotation', () => {
+        for (const page of ['scores', 'psalm'] as const) {
+            assert.ok(!PAGE_TYPES.includes(page), `${page} only shows in its own window`)
+            assert.ok(isPageType(page), `${page} must still pass isPageType, or a restart would discard its render.json`)
+        }
     })
 
     test('recognises known pages and rejects the rest', () => {
-        for (const page of PAGE_TYPES) assert.ok(isPageType(page), page)
+        for (const page of ALL_PAGES) assert.ok(isPageType(page), page)
         for (const bad of ['sports', 'Weather', '', 'photo ', '__proto__']) {
             assert.equal(isPageType(bad), false, `must reject ${JSON.stringify(bad)}`)
         }
@@ -24,7 +33,7 @@ describe('page registry', () => {
 
     test('dithers photographs and thresholds everything else', () => {
         assert.equal(ditherModeFor('photo'), 'dither')
-        for (const page of PAGE_TYPES.filter(p => p !== 'photo')) {
+        for (const page of ALL_PAGES.filter(p => p !== 'photo')) {
             assert.equal(ditherModeFor(page), 'threshold', page)
         }
     })
@@ -37,7 +46,7 @@ describe('page registry', () => {
 describe('renderPageHtml', () => {
     // Regression: a merge once dropped news from the render path, so it silently
     // fell through and served the photo template instead.
-    for (const page of PAGE_TYPES) {
+    for (const page of ALL_PAGES) {
         test(`renders the ${page} template`, async () => {
             const html = await renderPageHtml(page)
             assert.match(html, /^<!DOCTYPE html>/)

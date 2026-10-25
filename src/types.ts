@@ -1,5 +1,5 @@
 type DataAdapter<T> = {
-    name: "Weather" | "News" | "Calendar" | "Photo" | "Scores"
+    name: "Weather" | "News" | "Calendar" | "Photo" | "Scores" | "Psalm"
     fetchedAt: string
     data: T | null
 }
@@ -51,4 +51,11 @@ type ScoresData = {
     others: GameScore[]
 }
 
-export type { DataAdapter, WeatherData, CalendarData, PhotoData, Headline, NewsData, TeamScore, GameScore, ScoresData }
+type PsalmData = {
+    day: string           // liturgical day, e.g. "Thirtieth Sunday in Ordinary Time"
+    citation: string      // "Psalm 18:2-3, 3-4, 47, 51"
+    response: string      // the refrain the congregation sings back
+    stanzas: string[][]   // each stanza's lines, refrains removed
+}
+
+export type { DataAdapter, WeatherData, CalendarData, PhotoData, Headline, NewsData, TeamScore, GameScore, ScoresData, PsalmData }

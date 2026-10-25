@@ -8,11 +8,14 @@ import { PAGE_TYPES, ditherModeFor, isPageType, renderPageHtml, type PageType } 
 const STALE_AFTER_MS = 90 * 60 * 1000
 const SCORES_START_HOUR = 12
 const SCORES_END_HOUR = 23
+const PSALM_START_HOUR = 2
+const PSALM_END_HOUR = 12 // exclusive: noon goes back to the rotation
 
 // One render at a time: a boot render and a timer tick must not open two pages at once.
 let inFlight: Promise<void> | null = null
 
-export function isScoresWindow(now: Date): boolean {
+/** Weekday ("Sat") and 0-23 hour in Eastern time; the container itself runs in UTC. */
+function easternDayAndHour(now: Date): { weekday: string | undefined; hour: number } {
     const parts = new Intl.DateTimeFormat("en-US", {
         timeZone: "America/New_York",
         weekday: "short",
@@ -21,13 +24,30 @@ export function isScoresWindow(now: Date): boolean {
     }).formatToParts(now)
     const weekday = parts.find(part => part.type === "weekday")?.value
     const hour = Number(parts.find(part => part.type === "hour")?.value)
+    return { weekday, hour }
+}
+
+export function isScoresWindow(now: Date): boolean {
+    const { weekday, hour } = easternDayAndHour(now)
     return weekday === "Sat" && hour >= SCORES_START_HOUR && hour < SCORES_END_HOUR
+}
+
+export function isPsalmWindow(now: Date): boolean {
+    const { weekday, hour } = easternDayAndHour(now)
+    return weekday === "Sun" && hour >= PSALM_START_HOUR && hour < PSALM_END_HOUR
 }
 
 async function hasScoresToShow(): Promise<boolean> {
     const { getScoresData } = await import('../adapters/scores.js')
     const { data } = await getScoresData()
     return data !== null && (data.ohioState !== null || data.others.length > 0)
+}
+
+// Cheap after the first call of the day: the adapter caches the psalm until the date changes.
+async function hasPsalmToShow(): Promise<boolean> {
+    const { getPsalmData } = await import('../adapters/psalm.js')
+    const { data } = await getPsalmData()
+    return data !== null
 }
 
 async function nextPage(now: Date): Promise<{ page: PageType; rotationIndex: number }> {
@@ -38,6 +58,9 @@ async function nextPage(now: Date): Promise<{ page: PageType; rotationIndex: num
     }
     if (isScoresWindow(now) && await hasScoresToShow()) {
         return { page: 'scores', rotationIndex: index }
+    }
+    if (isPsalmWindow(now) && await hasPsalmToShow()) {
+        return { page: 'psalm', rotationIndex: index }
     }
     const page = PAGE_TYPES[index % PAGE_TYPES.length]!
     return { page, rotationIndex: (index + 1) % PAGE_TYPES.length }

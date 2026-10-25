@@ -1,4 +1,4 @@
-import type { CalendarData, DataAdapter, GameScore, NewsData, ScoresData, TeamScore, WeatherData } from "../types.js";
+import type { CalendarData, DataAdapter, GameScore, NewsData, PsalmData, ScoresData, TeamScore, WeatherData } from "../types.js";
 import { escapeHtml } from "../helpers.js"
 import { BASE_URL } from "../config.js"
 
@@ -277,4 +277,66 @@ export const renderPhotoTemplate = (photoData: DataAdapter<{ src: string | null 
         </main>
     </body>
 </html>`;
+}
+export function renderPsalmTemplate(psalmData: DataAdapter<PsalmData>, baseUrl: string = BASE_URL): string {
+    const psalm = psalmData.data
+    const citation = psalm ? escapeHtml(psalm.citation) : ""
+    const panelClass = psalm ? "panel" : "panel panel-psalm-empty"
+
+    const responseMarkup = psalm
+        ? `<section class="psalm-response metric-invert">
+                <div class="psalm-day">${escapeHtml(psalm.day)}</div>
+                <div class="psalm-refrain">${escapeHtml(psalm.response)}</div>
+            </section>`
+        : ""
+    const versesMarkup = psalm
+        ? psalm.stanzas
+            .map(stanza => `<p class="psalm-stanza">${stanza.map(line => `<span class="psalm-line">${escapeHtml(line)}</span>`).join("")}</p>`)
+            .join("")
+        : `<p class="psalm-empty">Psalm unavailable</p>`
+
+    return `<!DOCTYPE html>
+<html>
+    <head>
+        <base href="${baseUrl}/">
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="/assets/styles.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>E-Ink Psalm</title>
+    </head>
+    <body>
+        <main class="${panelClass}">
+            <header class="topbar">
+                <div class="clock">Sunday</div>
+                <div class="status">Responsorial Psalm</div>
+                <div class="wifi">${citation}</div>
+            </header>
+            ${responseMarkup}
+            <section class="psalm-verses">
+                ${versesMarkup}
+            </section>
+            <footer class="footer">
+                <span>Source: USCCB &middot; Lectionary for Mass &copy; CCD</span>
+                <span class="badge">${psalm ? "OK" : "no data"}</span>
+            </footer>
+        </main>
+        <script>
+            // Psalms run from ten short lines to sixteen long ones, so shrink the text
+            // until it fits rather than picking one size that is wrong for most weeks.
+            // Runs well before the capture's networkidle wait ends.
+            function shrinkToFit(target, overflows, minSize) {
+                if (!target) return
+                let size = parseFloat(getComputedStyle(target).fontSize)
+                while (overflows() && size > minSize) target.style.fontSize = (--size) + "px"
+            }
+            document.fonts.ready.then(() => {
+                const verses = document.querySelector(".psalm-verses")
+                const response = document.querySelector(".psalm-response")
+                // Overflowing CSS columns spill sideways, hence scrollWidth.
+                shrinkToFit(verses, () => verses.scrollWidth > verses.clientWidth, 12)
+                shrinkToFit(document.querySelector(".psalm-refrain"), () => response.scrollHeight > response.clientHeight, 20)
+            })
+        </script>
+    </body>
+</html>`
 }
