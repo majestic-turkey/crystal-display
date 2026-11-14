@@ -37,12 +37,6 @@ export function isPsalmWindow(now: Date): boolean {
     return weekday === "Sun" && hour >= PSALM_START_HOUR && hour < PSALM_END_HOUR
 }
 
-async function hasScoresToShow(): Promise<boolean> {
-    const { getScoresData } = await import('../adapters/scores.js')
-    const { data } = await getScoresData()
-    return data !== null && (data.ohioState !== null || data.others.length > 0)
-}
-
 // Cheap after the first call of the day: the adapter caches the psalm until the date changes.
 async function hasPsalmToShow(): Promise<boolean> {
     const { getPsalmData } = await import('../adapters/psalm.js')
@@ -56,7 +50,7 @@ async function nextPage(now: Date): Promise<{ page: PageType; rotationIndex: num
     if (forced && isPageType(forced)) {
         return { page: forced, rotationIndex: index }
     }
-    if (isScoresWindow(now) && await hasScoresToShow()) {
+    if (isScoresWindow(now)) {
         return { page: 'scores', rotationIndex: index }
     }
     if (isPsalmWindow(now) && await hasPsalmToShow()) {
