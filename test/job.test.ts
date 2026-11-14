@@ -1,6 +1,6 @@
 import { test, describe } from 'node:test'
 import assert from 'node:assert/strict'
-import { msUntilNextRefresh } from '../src/render/job.js'
+import { msUntilNextRefresh, isScoresWindow } from '../src/render/job.js'
 
 const MINUTE = 60_000
 const REFRESH_INTERVAL_MINUTES = 10 // matches the device's 600s sleep
@@ -56,5 +56,31 @@ describe('msUntilNextRefresh', () => {
         assert.equal(landing.getHours(), 0)
         assert.equal(landing.getMinutes(), 5)
         assert.equal(landing.getDate(), 8, 'rolls to the next day')
+    })
+})
+
+// UTC instants — Nov 14 2026 is a Saturday in EST (UTC-5).
+describe('isScoresWindow', () => {
+    test('opens at noon and closes at midnight Eastern on Saturday, across DST', () => {
+        assert.equal(isScoresWindow(new Date('2026-11-14T16:59:59Z')), false, '11:59am EST')
+        assert.equal(isScoresWindow(new Date('2026-11-14T17:00:00Z')), true,  'noon EST')
+        assert.equal(isScoresWindow(new Date('2026-11-15T04:59:59Z')), true,  '11:59pm EST')
+        assert.equal(isScoresWindow(new Date('2026-11-15T05:00:00Z')), false, 'midnight EST (Sunday)')
+        // EDT (UTC-4): Oct 17 2026 is a Saturday
+        assert.equal(isScoresWindow(new Date('2026-10-17T15:59:59Z')), false, '11:59am EDT')
+        assert.equal(isScoresWindow(new Date('2026-10-17T16:00:00Z')), true,  'noon EDT')
+        assert.equal(isScoresWindow(new Date('2026-10-18T03:59:59Z')), true,  '11:59pm EDT')
+        assert.equal(isScoresWindow(new Date('2026-10-18T04:00:00Z')), false, 'midnight EDT (Sunday)')
+    })
+
+    test('stays shut on other days at the same hour', () => {
+        assert.equal(isScoresWindow(new Date('2026-11-13T17:00:00Z')), false, 'Friday noon EST')
+        assert.equal(isScoresWindow(new Date('2026-11-15T17:00:00Z')), false, 'Sunday noon EST')
+    })
+
+    test('covers the full Saturday night including 11pm games', () => {
+        assert.equal(isScoresWindow(new Date('2026-11-15T04:00:00Z')), true, '11pm EST — night game still live')
+        assert.equal(isScoresWindow(new Date('2026-11-15T04:30:00Z')), true, '11:30pm EST')
+        assert.equal(isScoresWindow(new Date('2026-11-15T04:59:59Z')), true, '11:59pm EST')
     })
 })
