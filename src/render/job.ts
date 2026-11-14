@@ -7,7 +7,7 @@ import { PAGE_TYPES, ditherModeFor, isPageType, renderPageHtml, type PageType } 
 // const REFRESH_MINUTE = 50 // the device wakes on the hour; render just before it does
 const STALE_AFTER_MS = 90 * 60 * 1000
 const SCORES_START_HOUR = 12
-const SCORES_END_HOUR = 23
+const SCORES_END_HOUR = 24
 const PSALM_START_HOUR = 2
 const PSALM_END_HOUR = 12 // exclusive: noon goes back to the rotation
 
